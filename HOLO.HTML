@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realistic X-Ray Effect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #000;
+      color: cyan;
+      padding: 20px;
+    }
+    h1 {
+      color: #0ff;
+      text-shadow: 0 0 15px #0ff;
+    }
+    input {
+      margin: 20px 0;
+      padding: 10px;
+      background: #0ff;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    img {
+      max-width: 90%;
+      height: auto;
+      margin-top: 20px;
+      border: 5px solid #0ff;
+      border-radius: 10px;
+      transition: filter 0.3s;
+    }
+    /* X-Ray style filter */
+    .xray {
+      filter: invert(100%) contrast(200%) brightness(120%) hue-rotate(180deg) saturate(200%);
+    }
+  </style>
+</head>
+<body>
+  <h1>🔷 X-Ray Effect Demo 🔷</h1>
+  <p>Photo upload karke neeche X-ray style me dekho 👇</p>
+
+  <input type="file" accept="image/*" onchange="preview(event)">
+  <br>
+  <img id="photo" alt="Your photo will appear here">
+
+  <script>
+    function preview(event) {
+      const img = document.getElementById("photo");
+      img.src = URL.createObjectURL(event.target.files[0]);
+      img.onload = () => {
+        img.classList.add("xray"); // Apply X-ray style
+      };
+    }
+  </script>
+</body>
+</html>
