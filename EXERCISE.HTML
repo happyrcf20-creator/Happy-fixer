@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Progress Tracker with Diet Plan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card h2 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #fdbb2d;
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            border-color: #1a2a6c;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, #243b7a, #c42c2c);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .timer-container {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1a2a6c;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .timer-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #1a2a6c, #243b7a);
+            color: white;
+        }
+        
+        .pause-btn {
+            background: linear-gradient(to right, #b21f1f, #c42c2c);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, #fdbb2d, #fec543);
+            color: #333;
+        }
+        
+        .timer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .exercise-display {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .exercise-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #1a2a6c;
+        }
+        
+        .exercise-title {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .exercise-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .exercise-steps {
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .exercise-steps h4 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .exercise-steps ol {
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .next-exercise {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .next-exercise:hover {
+            background: linear-gradient(to right, #243b7a, #c42c2c);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .exercise-list {
+            list-style-type: none;
+            margin-top: 20px;
+        }
+        
+        .exercise-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s;
+        }
+        
+        .exercise-list li:hover {
+            transform: translateX(5px);
+        }
+        
+        .exercise-list li span {
+            font-weight: 600;
+        }
+        
+        .exercise-list li i {
+            color: #1a2a6c;
+            font-size: 1.2rem;
+        }
+        
+        .motivation {
+            text-align: center;
+            font-style: italic;
+            margin-top: 20px;
+            color: #666;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-box h3 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .meal-plan {
+            margin-top: 20px;
+        }
+        
+        .meal {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .meal-title {
+            font-weight: 600;
+            color: #1a2a6c;
+            font-size: 1.2rem;
+        }
+        
+        .meal-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .meal-content {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .meal-items {
+            flex: 2;
+        }
+        
+        .meal-items ul {
+            padding-left: 20px;
+        }
+        
+        .meal-items li {
+            margin-bottom: 5px;
+        }
+        
+        .meal-calories {
+            flex: 1;
+            text-align: right;
+            color: #b21f1f;
+            font-weight: 600;
+        }
+        
+        .diet-tips {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .diet-tips h3 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .diet-tips ul {
+            padding-left: 20px;
+        }
+        
+        .diet-tips li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: flex;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .timer-controls {
+                flex-wrap: wrap;
+            }
+            
+            .timer-btn {
+                flex: 1;
+                margin-bottom: 10px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                margin-bottom: 10px;
+            }
+            
+            .meal-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fitness Progress Tracker</h1>
+            <p class="tagline">Track your weight, set goals, and transform your body with personalized workouts & diet</p>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="fitness">Fitness Tracker</button>
+                <button class="tab-btn" data-tab="diet">Diet Plan</button>
+            </div>
+        </header>
+        
+        <div class="tab-content active" id="fitness-tab">
+            <div class="main-content">
+                <div class="card">
+                    <h2>Your Details</h2>
+                    <div class="input-group">
+                        <label for="weight">Current Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="Enter your current weight" value="70">
+                    </div>
+                    <div class="input-group">
+                        <label for="target">Target Weight (kg)</label>
+                        <input type="number" id="target" placeholder="Enter your target weight" value="65">
+                    </div>
+                    <div class="input-group">
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" placeholder="Enter your height" value="175">
+                    </div>
+                    <div class="input-group">
+                        <label for="days">Select Time Frame</label>
+                        <select id="days">
+                            <option value="1">1 Day</option>
+                            <option value="7">7 Days</option>
+                            <option value="9">9 Days</option>
+                            <option value="30" selected>30 Days</option>
+                            <option value="90">90 Days</option>
+                        </select>
+                    </div>
+                    <button id="calculate-btn">Calculate Workout Plan</button>
+                    
+                    <div class="result-box">
+                        <h3>Your Plan</h3>
+                        <div class="result-item">
+                            <span>Daily Exercise Time:</span>
+                            <span id="daily-time">30 minutes</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Recommended Calories:</span>
+                            <span id="daily-calories">1800 kcal</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Weight Change:</span>
+                            <span id="weight-change">-5 kg</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Workout Timer</h2>
+                    <div class="timer-container">
+                        <div class="timer-display" id="timer">30:00</div>
+                        
+                        <div class="timer-controls">
+                            <button class="timer-btn start-btn" id="start-btn">
+                                <i class="fas fa-play"></i> Start
+                            </button>
+                            <button class="timer-btn pause-btn" id="pause-btn">
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                            <button class="timer-btn reset-btn" id="reset-btn">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>Elapsed: <span id="elapsed-time">0:00</span></span>
+                                <span>Remaining: <span id="remaining-time">30:00</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-display">
+                        <div class="exercise-image">
+                            <i class="fas fa-running" id="exercise-icon"></i>
+                        </div>
+                        <h3 class="exercise-title" id="exercise-title">Jumping Jacks</h3>
+                        <p class="exercise-description" id="exercise-description">
+                            Full body cardiovascular exercise that improves coordination and burns calories.
+                        </p>
+                        
+                        <div class="exercise-steps">
+                            <h4>How to perform:</h4>
+                            <ol>
+                                <li>Stand upright with your legs together and arms at your sides</li>
+                                <li>Jump while raising your arms and spreading your legs</li>
+                                <li>Return to the starting position by jumping again</li>
+                                <li>Repeat at a rapid pace</li>
+                            </ol>
+                        </div>
+                        
+                        <button class="next-exercise" id="next-exercise">
+                            <i class="fas fa-arrow-right"></i> Next Exercise
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Exercise Plan</h2>
+                    <div class="input-group">
+                        <label for="focus-area">Focus Area</label>
+                        <select id="focus-area">
+                            <option value="fullbody" selected>Full Body</option>
+                            <option value="upper">Upper Body</option>
+                            <option value="lower">Lower Body</option>
+                            <option value="core">Core</option>
+                            <option value="cardio">Cardio</option>
+                        </select>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Today's Exercises</h3>
+                    <ul class="exercise-list">
+                        <li><span>Jumping Jacks</span> <i class="fas fa-running"></i></li>
+                        <li><span>Push-ups</span> <i class="fas fa-dumbbell"></i></li>
+                        <li><span>Squats</span> <i class="fas fa-walking"></i></li>
+                        <li><span>Plank</span> <i class="fas fa-hands-helping"></i></li>
+                        <li><span>Lunges</span> <i class="fas fa-shoe-prints"></i></li>
+                    </ul>
+                    
+                    <div class="motivation">
+                        <p>"The only bad workout is the one that didn't happen."</p>
+                    </div>
+                    
+                    <button id="workout-btn">Generate New Workout Plan</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="diet-tab">
+            <div class="main-content">
+                <div class="card">
+                    <h2>Daily Diet Plan</h2>
+                    <p>Based on your fitness goals, here's a recommended diet plan for one day:</p>
+                    
+                    <div class="meal-plan">
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Breakfast</div>
+                                <div class="meal-time">7:00 - 8:00 AM</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>2 boiled eggs</li>
+                                        <li>1 bowl of oatmeal with fruits</li>
+                                        <li>1 glass of milk or green tea</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">350 kcal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Mid-Morning Snack</div>
+                                <div class="meal-time">10:30 - 11:00 AM</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>1 apple or banana</li>
+                                        <li>Handful of almonds (10-12 pieces)</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">150 kcal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Lunch</div>
+                                <div class="meal-time">1:00 - 2:00 PM</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>1 bowl of brown rice or 2 chapatis</li>
+                                        <li>1 bowl of dal or chicken curry</li>
+                                        <li>1 bowl of seasonal vegetables</li>
+                                        <li>1 bowl of salad</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">500 kcal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Evening Snack</div>
+                                <div class="meal-time">4:30 - 5:00 PM</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>1 glass of protein shake</li>
+                                        <li>Or 1 cup of green tea with roasted chana</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">200 kcal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Dinner</div>
+                                <div class="meal-time">7:00 - 8:00 PM</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>1 bowl of grilled chicken or fish</li>
+                                        <li>1 bowl of steamed vegetables</li>
+                                        <li>1 bowl of salad</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">400 kcal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meal">
+                            <div class="meal-header">
+                                <div class="meal-title">Post-Workout (if applicable)</div>
+                                <div class="meal-time">After workout</div>
+                            </div>
+                            <div class="meal-content">
+                                <div class="meal-items">
+                                    <ul>
+                                        <li>1 scoop of protein powder with water</li>
+                                        <li>Or 1 banana</li>
+                                    </ul>
+                                </div>
+                                <div class="meal-calories">150 kcal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-item" style="margin-top: 20px;">
+                        <span style="font-weight: 600;">Total Calories:</span>
+                        <span style="font-weight: 600; color: #b21f1f;">1750 kcal</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Diet Tips</h2>
+                    <div class="diet-tips">
+                        <h3>Important Nutrition Guidelines</h3>
+                        <ul>
+                            <li>Drink at least 3-4 liters of water throughout the day</li>
+                            <li>Include protein in every meal for muscle recovery</li>
+                            <li>Choose complex carbs over simple carbs</li>
+                            <li>Eat healthy fats like nuts, seeds, and olive oil</li>
+                            <li>Include fiber-rich foods for better digestion</li>
+                            <li>Limit processed foods and sugar</li>
+                            <li>Eat every 3-4 hours to maintain metabolism</li>
+                            <li>Portion control is key - use smaller plates</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="diet-tips">
+                        <h3>Foods to Include</h3>
+                        <ul>
+                            <li><strong>Proteins:</strong> Eggs, chicken, fish, lentils, tofu, Greek yogurt</li>
+                            <li><strong>Carbs:</strong> Brown rice, oats, quinoa, sweet potatoes, whole wheat</li>
+                            <li><strong>Fats:</strong> Avocado, nuts, seeds, olive oil, coconut oil</li>
+                            <li><strong>Vegetables:</strong> Spinach, broccoli, carrots, bell peppers, tomatoes</li>
+                            <li><strong>Fruits:</strong> Berries, apples, bananas, oranges, papaya</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="diet-tips">
+                        <h3>Foods to Avoid</h3>
+                        <ul>
+                            <li>Sugar and sugary drinks</li>
+                            <li>Processed foods and snacks</li>
+                            <li>Fried foods and excessive oil</li>
+                            <li>White bread and refined flour</li>
+                            <li>Alcohol and excessive caffeine</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Customize Your Diet</h2>
+                    <div class="input-group">
+                        <label for="diet-type">Diet Preference</label>
+                        <select id="diet-type">
+                            <option value="balanced" selected>Balanced</option>
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="non-vegetarian">Non-Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="low-carb">Low-Carb</option>
+                            <option value="high-protein">High-Protein</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="calorie-goal">Daily Calorie Goal (kcal)</label>
+                        <input type="number" id="calorie-goal" value="1750">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="allergies">Allergies or Restrictions</label>
+                        <input type="text" id="allergies" placeholder="List any food allergies">
+                    </div>
+                    
+                    <button id="update-diet">Update Diet Plan</button>
+                    
+                    <div class="motivation">
+                        <p>"Abs are made in the kitchen, not just the gym."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Timer elements
+            const timerDisplay = document.getElementById('timer');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const progressFill = document.getElementById('progress-fill');
+            const elapsedTime = document.getElementById('elapsed-time');
+            const remainingTime = document.getElementById('remaining-time');
+            
+            // Exercise elements
+            const exerciseIcon = document.getElementById('exercise-icon');
+            const exerciseTitle = document.getElementById('exercise-title');
+            const exerciseDescription = document.getElementById('exercise-description');
+            const nextExerciseBtn = document.getElementById('next-exercise');
+            
+            // Input elements
+            const weightInput = document.getElementById('weight');
+            const targetInput = document.getElementById('target');
+            const heightInput = document.getElementById('height');
+            const daysInput = document.getElementById('days');
+            const calculateBtn = document.getElementById('calculate-btn');
+            
+            // Result elements
+            const dailyTime = document.getElementById('daily-time');
+            const dailyCalories = document.getElementById('daily-calories');
+            const weightChange = document.getElementById('weight-change');
+            
+            // Tab elements
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Timer variables
+            let timeLeft = 1800; // 30 minutes in seconds
+            let totalTime = 1800;
+            let timerInterval;
+            let isRunning = false;
+            
+            // Exercise data
+            const exercises = [
+                {
+                    icon: 'fas fa-running',
+                    title: 'Jumping Jacks',
+                    description: 'Full body cardiovascular exercise that improves coordination and burns calories.',
+                    duration: 60
+                },
+                {
+                    icon: 'fas fa-dumbbell',
+                    title: 'Push-ups',
+                    description: 'Upper body strength exercise targeting chest, shoulders, and triceps.',
+                    duration: 60
+                },
+                {
+                    icon: 'fas fa-wind',
+                    title: 'Rest',
+                    description: 'Take a short break to recover before the next exercise.',
+                    duration: 30
+                },
+                {
+                    icon: 'fas fa-walking',
+                    title: 'Lunges',
+                    description: 'Lower body exercise that strengthens legs and improves balance.',
+                    duration: 60
+                },
+                {
+                    icon: 'fas fa-hands-helping',
+                    title: 'Plank',
+                    description: 'Core strengthening exercise that engages multiple muscle groups.',
+                    duration: 60
+                }
+            ];
+            
+            let currentExercise = 0;
+            
+            // Format time in mm:ss
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            // Update timer display
+            function updateTimer() {
+                timerDisplay.textContent = formatTime(timeLeft);
+                elapsedTime.textContent = formatTime(totalTime - timeLeft);
+                remainingTime.textContent = formatTime(timeLeft);
+                
+                // Update progress bar
+                const progress = ((totalTime - timeLeft) / totalTime) * 100;
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            // Start timer
+            function startTimer() {
+                if (!isRunning) {
+                    isRunning = true;
+                    timerInterval = setInterval(() => {
+                        if (timeLeft > 0) {
+                            timeLeft--;
+                            updateTimer();
+                        } else {
+                            clearInterval(timerInterval);
+                            isRunning = false;
+                            // Automatically move to next exercise when timer completes
+                            nextExercise();
+                        }
+                    }, 1000);
+                }
+            }
+            
+            // Pause timer
+            function pauseTimer() {
+                clearInterval(timerInterval);
+                isRunning = false;
+            }
+            
+            // Reset timer
+            function resetTimer() {
+                clearInterval(timerInterval);
+                isRunning = false;
+                timeLeft = totalTime;
+                updateTimer();
+            }
+            
+            // Update exercise display
+            function updateExercise() {
+                const exercise = exercises[currentExercise];
+                exerciseIcon.className = exercise.icon;
+                exerciseTitle.textContent = exercise.title;
+                exerciseDescription.textContent = exercise.description;
+                
+                // Set timer to exercise duration
+                totalTime = exercise.duration;
+                timeLeft = exercise.duration;
+                updateTimer();
+            }
+            
+            // Move to next exercise
+            function nextExercise() {
+                currentExercise = (currentExercise + 1) % exercises.length;
+                updateExercise();
+                resetTimer();
+            }
+            
+            // Calculate workout plan based on user inputs
+            function calculatePlan() {
+                const weight = parseFloat(weightInput.value);
+                const target = parseFloat(targetInput.value);
+                const height = parseFloat(heightInput.value);
+                const days = parseInt(daysInput.value);
+                
+                if (isNaN(weight) || isNaN(target) || isNaN(height) || isNaN(days)) {
+                    alert('Please enter valid values for all fields');
+                    return;
+                }
+                
+                // Calculate recommended values based on inputs
+                const weightDiff = weight - target;
+                const dailyWeightChange = weightDiff / days;
+                
+                // Calculate recommended exercise time (30-60 minutes based on goals)
+                const exerciseTime = Math.min(60, Math.max(30, Math.round(30 + (weightDiff * 0.5))));
+                totalTime = exerciseTime * 60;
+                timeLeft = totalTime;
+                updateTimer();
+                
+                // Calculate recommended daily calories
+                const bmr = 10 * weight + 6.25 * height - 5 * 25 + 5; // Basic BMR calculation
+                const calorieDeficit = dailyWeightChange * 7700; // 7700 kcal per kg of weight
+                const dailyCalorieIntake = Math.round(bmr - (calorieDeficit / days));
+                
+                // Update result display
+                dailyTime.textContent = `${exerciseTime} minutes`;
+                dailyCalories.textContent = `${dailyCalorieIntake} kcal`;
+                weightChange.textContent = `${weightDiff > 0 ? '-' : '+'}${Math.abs(weightDiff).toFixed(1)} kg`;
+            }
+            
+            // Switch tabs
+            function switchTab(tabName) {
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                tabBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', startTimer);
+            pauseBtn.addEventListener('click', pauseTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            nextExerciseBtn.addEventListener('click', nextExercise);
+            calculateBtn.addEventListener('click', calculatePlan);
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+            
+            // Initialize
+            updateTimer();
+            updateExercise();
+        });
+    </script>
+</body>
+</html>
