@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Code Translator & Tutor</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: white; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.light { background: #f0f0f0; color: #222; }
+    .container {
+      width: 95%; max-width: 1200px;
+      background: rgba(0,0,0,0.75);
+      padding: 20px; border-radius: 12px; text-align: center;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    }
+    body.light .container { background: rgba(255,255,255,0.9); }
+    h2 { margin-bottom: 15px; }
+    input, textarea, select {
+      width: 90%; padding: 10px; border: none; border-radius: 8px;
+      margin-bottom: 10px; font-size: 16px;
+    }
+    textarea { height: 120px; resize: vertical; }
+    button {
+      padding: 8px 12px; margin: 4px;
+      border: none; border-radius: 8px;
+      background: #4CAF50; color: white; font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+    #appContent { display: none; }
+    .output {
+      background: #1e1e1e; color: #00ffae;
+      padding: 10px; border-radius: 8px; text-align: left;
+      white-space: pre-wrap; margin-top: 15px; min-height: 100px;
+    }
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; }
+    .hidden { display: none; }
+    .tool-box { margin-top: 15px; padding: 10px; border: 1px solid #555; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Step 1: API Key -->
+    <div id="apiKeyBox">
+      <h2>🔑 Enter OpenAI API Key</h2>
+      <input type="text" id="apiKeyInput" placeholder="Enter your OpenAI API Key">
+      <br>
+      <button onclick="saveApiKey()">Save Key</button>
+    </div>
+
+    <!-- Step 2–4: App -->
+    <div id="appContent">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button onclick="restartApp()">🔄 Restart</button>
+        <button onclick="toggleTheme()">🌞/🌙</button>
+        <button onclick="showHistory()">🕘 History</button>
+        <button onclick="toggleMusic()">🎵 Music</button>
+        <button onclick="speakOutput()">🔊 Speak</button>
+        <button onclick="enterTutor()">👩‍🏫 Tutor</button>
+      </div>
+
+      <!-- Translator -->
+      <h2>🚀 AI Code Translator</h2>
+      <textarea id="userInput" placeholder="✍️ Enter your code here..."></textarea><br>
+      <select id="targetLang">
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <option value="java">Java</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="csharp">C#</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="go">Go</option>
+        <option value="rust">Rust</option>
+        <option value="kotlin">Kotlin</option>
+        <option value="swift">Swift</option>
+        <option value="typescript">TypeScript</option>
+        <option value="r">R</option>
+        <option value="matlab">MATLAB</option>
+        <option value="scala">Scala</option>
+        <option value="perl">Perl</option>
+        <option value="haskell">Haskell</option>
+        <option value="dart">Dart</option>
+        <option value="sql">SQL</option>
+      </select><br>
+      <button onclick="translateCode()">🌍 Translate</button>
+      <div class="output" id="outputBox">⚡ Output will appear here...</div>
+
+      <!-- Step 3: Tools -->
+      <h2>🛠 Tools (1–40)</h2>
+      <div id="toolButtons"></div>
+      <div id="toolArea"></div>
+
+      <!-- Step 4: Tutor -->
+      <div id="tutorArea" class="hidden">
+        <h2>👩‍🏫 Coding Tutor</h2>
+        <div id="topicList"></div>
+        <div id="lessonArea"></div>
+        <div id="quizArea"></div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-energy.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Theme
+    function toggleTheme(){ document.body.classList.toggle("light"); }
+
+    // API Key handling
+    window.onload = () => {
+      const savedKey = localStorage.getItem("openai_api_key");
+      if (savedKey){ document.getElementById("apiKeyBox").style.display="none"; document.getElementById("appContent").style.display="block"; }
+    };
+    function saveApiKey(){
+      const key=document.getElementById("apiKeyInput").value.trim();
+      if(!key.startsWith("sk-")){alert("❌ Invalid API Key!");return;}
+      localStorage.setItem("openai_api_key",key);
+      document.getElementById("apiKeyBox").style.display="none";
+      document.getElementById("appContent").style.display="block";
+    }
+
+    // Restart
+    function restartApp(){
+      document.getElementById("userInput").value="";
+      document.getElementById("outputBox").textContent="⚡ Output will appear here...";
+    }
+
+    // History
+    let historyList=[];
+    function showHistory(){
+      alert("📜 History:\n\n"+(historyList.join("\n\n")||"No history yet."));
+    }
+
+    // Translate
+    async function translateCode(){
+      const key=localStorage.getItem("openai_api_key");
+      if(!key){alert("❌ Missing Key!");return;}
+      const input=document.getElementById("userInput").value;
+      const targetLang=document.getElementById("targetLang").value;
+      document.getElementById("outputBox").textContent="⏳ Translating...";
+      try{
+        const res=await fetch("https://api.openai.com/v1/chat/completions",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json","Authorization":`Bearer ${key}`},
+          body:JSON.stringify({
+            model:"gpt-4o-mini",
+            messages:[
+              {role:"system",content:"You are an expert code translator."},
+              {role:"user",content:`Detect this code and translate into ${targetLang}:\n${input}`}
+            ]
+          })
+        });
+        const data=await res.json();
+        const out=data.choices?.[0]?.message?.content||"❌ No response";
+        document.getElementById("outputBox").textContent=out;
+        historyList.push(`Input:\n${input}\n\nOutput:\n${out}`);
+      }catch(e){ document.getElementById("outputBox").textContent="⚠️ Error: "+e.message; }
+    }
+
+    // Music
+    function toggleMusic(){
+      const m=document.getElementById("bgMusic");
+      if(m.paused){m.play();}else{m.pause();}
+    }
+
+    // Speaker
+    function speakOutput(){
+      const txt=document.getElementById("outputBox").textContent;
+      const sp=new SpeechSynthesisUtterance(txt);
+      speechSynthesis.speak(sp);
+    }
+
+    // Tools
+    const tools={
+      "Calculator":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><input id='calcInput' placeholder='e.g. 2+2*5'><button onclick='runCalc()'>=</button><div id='calcOut'></div></div>`;},
+      "Timer":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><input id='sec' type='number' placeholder='Seconds'><button onclick='startTimer()'>Start</button><div id='timeOut'></div></div>`;},
+      "Notepad":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><textarea id='note'></textarea><button onclick='saveNote()'>Save</button></div>`;},
+      "JSON Formatter":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><textarea id='jsonIn'></textarea><button onclick='fmtJSON()'>Format</button><div id='jsonOut'></div></div>`;},
+      "Regex Tester":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><input id='regInput' placeholder='Pattern'><input id='regText' placeholder='Test text'><button onclick='runRegex()'>Test</button><div id='regOut'></div></div>`;},
+      "Color Picker":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><input type='color' id='col'><div id='colOut'>Pick color</div></div>`;document.getElementById("col").oninput=()=>{document.getElementById("colOut").style.background=document.getElementById("col").value;};},
+      "Base64 Encode":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><textarea id='b64In'></textarea><button onclick='enc64()'>Encode</button><div id='b64Out'></div></div>`;},
+      "Base64 Decode":()=>{document.getElementById("toolArea").innerHTML=`<div class='tool-box'><textarea id='b64dIn'></textarea><button onclick='dec64()'>Decode</button><div id='b64dOut'></div></div>`;}
+    };
+
+    function runCalc(){ try{document.getElementById("calcOut").textContent=eval(document.getElementById("calcInput").value);}catch{document.getElementById("calcOut").textContent="❌ Error";}}
+    function startTimer(){ let s=parseInt(document.getElementById("sec").value);const out=document.getElementById("timeOut");const int=setInterval(()=>{out.textContent=s+" sec";if(s--<=0){clearInterval(int);out.textContent="⏰ Done!";}},1000);}
+    function saveNote(){alert("Saved: "+document.getElementById("note").value);}
+    function fmtJSON(){try{document.getElementById("jsonOut").textContent=JSON.stringify(JSON.parse(document.getElementById("jsonIn").value),null,2);}catch{document.getElementById("jsonOut").textContent="❌ Invalid JSON";}}
+    function runRegex(){try{const r=new RegExp(document.getElementById("regInput").value);document.getElementById("regOut").textContent=r.test(document.getElementById("regText").value)?"✅ Match":"❌ No Match";}catch{document.getElementById("regOut").textContent="⚠️ Invalid regex";}}
+    function enc64(){document.getElementById("b64Out").textContent=btoa(document.getElementById("b64In").value);}
+    function dec64(){try{document.getElementById("b64dOut").textContent=atob(document.getElementById("b64dIn").value);}catch{document.getElementById("b64dOut").textContent="⚠️ Invalid";}}
+
+    const toolButtons=document.getElementById("toolButtons");
+    Object.keys(tools).forEach((t,i)=>{const b=document.createElement("button");b.textContent=(i+1)+". "+t;b.onclick=tools[t];toolButtons.appendChild(b);});
+
+    // Tutor
+    const topics=Array.from({length:100},(_,i)=>"Topic "+(i+1));
+    function enterTutor(){
+      document.getElementById("tutorArea").classList.remove("hidden");
+      document.getElementById("topicList").innerHTML=topics.map((t,i)=>`<button onclick='openLesson(${i})'>${t}</button>`).join(" ");
+    }
+    function openLesson(i){
+      document.getElementById("lessonArea").innerHTML=`<h3>${topics[i]}</h3><p>This is a lesson about ${topics[i]}.</p><button onclick='startQuiz(${i})'>Take Test</button>`;
+    }
+    function startQuiz(i){
+      let qTime=10;const quiz=document.getElementById("quizArea");
+      quiz.innerHTML=`<p>Test on ${topics[i]}: 2+2=?</p><input id='ans'><button onclick='checkAns()'>Submit</button><div id='timer'></div>`;
+      const int=setInterval(()=>{document.getElementById("timer").textContent="⏳ "+qTime+" sec";if(qTime--<=0){clearInterval(int);quiz.innerHTML="❌ Time up!";}},1000);
+    }
+    function checkAns(){const a=document.getElementById("ans").value;if(a=="4"){alert("✅ Correct!");}else{alert("❌ Wrong!");}}
+  </script>
+</body>
+</html>
