@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Sad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            background-color: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            background-color: #000;
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .display-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: #222;
+            color: #fff;
+            border-bottom-right-radius: 5px;
+            border: 1px solid #333;
+        }
+        
+        .system-message {
+            align-self: flex-start;
+            background-color: #ff0000;
+            color: #fff;
+            border-bottom-left-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .blue-message {
+            background-color: #0066cc !important;
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 20px;
+            background-color: #000;
+            border-top: 1px solid #333;
+        }
+        
+        .input-box {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #333;
+            border-radius: 30px;
+            background-color: #111;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .input-box:focus {
+            border-color: #ff0000;
+        }
+        
+        .send-button {
+            margin-left: 10px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background-color: #ff0000;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .send-button:hover {
+            background-color: #cc0000;
+        }
+        
+        .blue-circle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #0066ff;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            animation: circlePulse 2s infinite;
+            box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+            display: none;
+        }
+        
+        .kill-message {
+            animation: killAnimation 0.5s infinite;
+            background-color: #ff0000 !important;
+            color: #000 !important;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes killAnimation {
+            0% { transform: scale(1); background-color: #ff0000; }
+            50% { transform: scale(1.2); background-color: #ff3333; }
+            100% { transform: scale(1); background-color: #ff0000; }
+        }
+        
+        @keyframes circlePulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        .move-around { animation: moveAround 2s infinite; }
+        .says-around { animation: saysAround 3s infinite; }
+        .happy-around { animation: happyAround 3s infinite; }
+        .play-in-night { animation: playInNight 4s infinite; }
+        .cry { animation: cry 2s infinite; }
+        .dont-kill-me { animation: dontKillMe 1.5s infinite; }
+        .please-dont-kill { animation: pleaseDontKill 2s infinite; }
+        .all-together { animation: allTogether 3s infinite; }
+        
+        @keyframes moveAround {
+            0% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(10px) rotate(2deg); }
+            50% { transform: translateX(-10px) rotate(-2deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
+            100% { transform: translateX(-5px) rotate(-1deg); }
+        }
+        
+        @keyframes saysAround {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes happyAround {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-1deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes playInNight {
+            0% { background-color: #0066cc; }
+            50% { background-color: #004499; box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+            100% { background-color: #0066cc; }
+        }
+        
+        @keyframes cry {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        @keyframes dontKillMe {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes pleaseDontKill {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes allTogether {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Happy Sad</h1>
+        </div>
+        <div class="display-area" id="displayArea">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="input-area">
+            <input type="text" class="input-box" id="inputBox" placeholder="Type 'happy happy' to start...">
+            <button class="send-button" id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const displayArea = document.getElementById('displayArea');
+            const inputBox = document.getElementById('inputBox');
+            const sendButton = document.getElementById('sendButton');
+            const body = document.body;
+            
+            let currentPhase = -1;
+            let phaseInputCount = 0;
+            let killMode = false;
+            let killCount = 0;
+            let blueCircle = null;
+            let scriptStarted = false;
+            
+            const phases = [
+                { name: "moving around", count: 3, animation: "move-around" },
+                { name: "says around", count: 3, animation: "says-around" },
+                { name: "happy around you", count: 3, animation: "happy-around" },
+                { name: "playing in night", count: 3, animation: "play-in-night", color: "blue" },
+                { name: "cry", count: 3, animation: "cry" },
+                { name: "don't kill me", count: 1, animation: "dont-kill-me" },
+                { name: "please don't kill", count: 3, animation: "please-dont-kill" },
+                { name: "All together", count: 1, animation: "all-together" }
+            ];
+            
+            // Function to add a user message
+            function addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'user-message');
+                messageDiv.textContent = text;
+                displayArea.appendChild(messageDiv);
+                displayArea.scrollTop = displayArea.scrollHeight;
+                
+                // Process the message
+                processMessage(text);
+            }
+            
+            // Function to add a system message
+            function addSystemMessage(text, animationClass = '', isBlue = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'system-message');
+                if (animationClass) {
+                    messageDiv.classList.add(animationClass);
+                }
+                if (isBlue) {
+                    messageDiv.classList.add('blue-message');
+                }
+                messageDiv.textContent = text;
+                displayArea.appendChild(messageDiv);
+                displayArea.scrollTop = displayArea.scrollHeight;
+            }
+            
+            // Function to process the message
+            function processMessage(text) {
+                const lowerText = text.toLowerCase().trim();
+                
+                // Check for kill mode trigger
+                if (lowerText === 'sad' && scriptStarted && currentPhase >= phases.length) {
+                    activateKillMode();
+                    return;
+                }
+                
+                // If script not started, only accept "happy happy"
+                if (!scriptStarted) {
+                    if (lowerText === 'happy happy') {
+                        scriptStarted = true;
+                        currentPhase = 0;
+                        phaseInputCount = 1;
+                        // Add first system response
+                        setTimeout(() => {
+                            addSystemMessage(
+                                phases[currentPhase].name, 
+                                phases[currentPhase].animation,
+                                phases[currentPhase].color === "blue"
+                            );
+                        }, 500);
+                    } else {
+                        // Echo wrong input
+                        setTimeout(() => {
+                            addSystemMessage(text);
+                        }, 500);
+                    }
+                    return;
+                }
+                
+                // If script started but not completed, only accept "happy happy"
+                if (scriptStarted && currentPhase < phases.length) {
+                    if (lowerText === 'happy happy') {
+                        phaseInputCount++;
+                        
+                        // Add system response with animation
+                        setTimeout(() => {
+                            addSystemMessage(
+                                phases[currentPhase].name, 
+                                phases[currentPhase].animation,
+                                phases[currentPhase].color === "blue"
+                            );
+                        }, 500);
+                        
+                        // Check if phase is complete
+                        if (phaseInputCount >= phases[currentPhase].count) {
+                            phaseInputCount = 0;
+                            currentPhase++;
+                        }
+                    } else {
+                        // Echo wrong input
+                        setTimeout(() => {
+                            addSystemMessage(text);
+                        }, 500);
+                    }
+                }
+            }
+            
+            // Function to activate kill mode
+            function activateKillMode() {
+                killMode = true;
+                
+                // Start infinite kill messages
+                const killInterval = setInterval(() => {
+                    if (killMode) {
+                        addSystemMessage("KILL", "kill-message");
+                        killCount++;
+                        
+                        // Create or move blue circle after every 100 kills
+                        if (killCount % 100 === 0) {
+                            createOrMoveBlueCircle();
+                        }
+                    } else {
+                        clearInterval(killInterval);
+                    }
+                }, 100);
+            }
+            
+            // Function to create or move blue circle
+            function createOrMoveBlueCircle() {
+                if (!blueCircle) {
+                    // Create blue circle
+                    blueCircle = document.createElement('div');
+                    blueCircle.classList.add('blue-circle');
+                    blueCircle.style.display = 'block';
+                    
+                    // Add click event to refresh page
+                    blueCircle.addEventListener('click', function() {
+                        location.reload();
+                    });
+                    
+                    body.appendChild(blueCircle);
+                }
+                
+                // Move blue circle to random position
+                const x = Math.random() * (window.innerWidth - 40);
+                const y = Math.random() * (window.innerHeight - 40);
+                
+                blueCircle.style.left = `${x}px`;
+                blueCircle.style.top = `${y}px`;
+            }
+            
+            // Event listener for send button
+            sendButton.addEventListener('click', function() {
+                const message = inputBox.value.trim();
+                if (message) {
+                    addUserMessage(message);
+                    inputBox.value = '';
+                }
+            });
+            
+            // Event listener for Enter key
+            inputBox.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendButton.click();
+                }
+            });
+            
+            // Focus on input box
+            inputBox.focus();
+        });
+    </script>
+</body>
+</html>
